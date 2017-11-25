@@ -14,6 +14,6 @@ setup(
     description='Store various knowledge to graph.',
     author='Henrik Heino',
     author_email='henrik.heino@gmail.com',
-    install_requires=[],
+    install_requires=['python-dateutil'],
     dependency_links=[],
 )
