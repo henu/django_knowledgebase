@@ -174,3 +174,16 @@ class TimeValue(models.Model):
         if self.precision >= 14:
             result += ':{:02d}'.format(value.second)
         return result
+
+
+class Reference(models.Model):
+    statement = models.ForeignKey(Statement, related_name='references')
+    url = models.URLField(max_length=250, null=True, blank=True)
+    description = models.CharField(max_length=250, null=True, blank=True)
+
+    def __unicode__(self):
+        if self.url:
+            return self.url
+        if self.description:
+            return self.description
+        return ''
