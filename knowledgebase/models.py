@@ -67,20 +67,20 @@ class Statement(models.Model):
 
     def get_value_as_string(self):
         if self.value:
-            return '{:s}'.format(self.value)
+            return '{:s}'.format(str(self.value))
         if hasattr(self, 'string_value'):
-            return '{:s}'.format(self.string_value)
+            return '{:s}'.format(str(self.string_value))
         if hasattr(self, 'quantity_value'):
-            return '{}'.format(self.quantity_value)
+            return '{}'.format(str(self.quantity_value))
         if hasattr(self, 'time_value'):
-            return '{}'.format(self.time_value)
+            return '{}'.format(str(self.time_value))
         return '*NO VALUE*'
 
     def __str__(self):
         if self.concept:
-            return '{}, {}, {}'.format(self.concept, self.pred, self.get_value_as_string())
+            return '{}, {}, {}'.format(str(self.concept), str(self.pred), self.get_value_as_string())
         assert self.statement
-        return '{} ({}, {})'.format(self.statement, self.pred, self.get_value_as_string())
+        return '{} ({}, {})'.format(str(self.statement), str(self.pred), self.get_value_as_string())
 
 
 @python_2_unicode_compatible
