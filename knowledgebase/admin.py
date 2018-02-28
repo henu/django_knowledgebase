@@ -6,6 +6,7 @@ from django.utils.html import format_html
 
 from knowledgebase.models import Concept, Translation, Statement, StringValue, QuantityValue, TimeValue, CoordinateValue, Reference
 
+
 @admin.register(Concept)
 class ConceptAdmin(admin.ModelAdmin):
 
@@ -36,29 +37,36 @@ class ConceptAdmin(admin.ModelAdmin):
         return html
     show_translations.short_description = 'Translations'
 
+
 @admin.register(Translation)
 class TranslationAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(Statement)
 class StatementAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(StringValue)
 class StringValueAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(QuantityValue)
 class QuantityValueAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(TimeValue)
 class TimeValueAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(CoordinateValue)
 class CoordinateValueAdmin(admin.ModelAdmin):
     pass
+
 
 @admin.register(Reference)
 class ReferenceAdmin(admin.ModelAdmin):
