@@ -38,7 +38,7 @@ class Concept(models.Model):
 
 
 class Translation(models.Model):
-    concept = models.ForeignKey(Concept, related_name='translations')
+    concept = models.ForeignKey(Concept, related_name='translations', on_delete=models.CASCADE)
     translation = models.CharField(max_length=250)
     lang = models.CharField(max_length=15)
     case = models.CharField(max_length=40, null=True, blank=True, default=None)
@@ -54,10 +54,10 @@ class Translation(models.Model):
 
 
 class Statement(models.Model):
-    concept = models.ForeignKey(Concept, related_name='statements', null=True, blank=True)
-    statement = models.ForeignKey('Statement', related_name='qualifiers', null=True, blank=True)
-    pred = models.ForeignKey(Concept, related_name='as_predicate')
-    value = models.ForeignKey(Concept, related_name='as_value', null=True, blank=True)
+    concept = models.ForeignKey(Concept, related_name='statements', on_delete=models.CASCADE, null=True, blank=True)
+    statement = models.ForeignKey('Statement', related_name='qualifiers', on_delete=models.CASCADE, null=True, blank=True)
+    pred = models.ForeignKey(Concept, related_name='as_predicate', on_delete=models.CASCADE)
+    value = models.ForeignKey(Concept, related_name='as_value', on_delete=models.CASCADE, null=True, blank=True)
 
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -80,7 +80,7 @@ class Statement(models.Model):
 
 
 class StringValue(models.Model):
-    statement = models.OneToOneField(Statement, related_name='string_value')
+    statement = models.OneToOneField(Statement, related_name='string_value', on_delete=models.CASCADE)
     value = models.TextField()
 
     def __unicode__(self):
@@ -88,7 +88,7 @@ class StringValue(models.Model):
 
 
 class QuantityValue(models.Model):
-    statement = models.OneToOneField(Statement, related_name='quantity_value')
+    statement = models.OneToOneField(Statement, related_name='quantity_value', on_delete=models.CASCADE)
     value = models.DecimalField(max_digits=30, decimal_places=12)
     lower_bound = models.DecimalField(max_digits=30, decimal_places=12, null=True, blank=True)
     upper_bound = models.DecimalField(max_digits=30, decimal_places=12, null=True, blank=True)
@@ -113,7 +113,7 @@ class TimeValue(models.Model):
         (14, _('second')),
     ]
 
-    statement = models.OneToOneField(Statement, related_name='time_value')
+    statement = models.OneToOneField(Statement, related_name='time_value', on_delete=models.CASCADE)
     value = models.DateTimeField()
 
     precision = models.PositiveSmallIntegerField(choices=PRECISION_CHOICES)
@@ -177,7 +177,7 @@ class TimeValue(models.Model):
 
 
 class Reference(models.Model):
-    statement = models.ForeignKey(Statement, related_name='references')
+    statement = models.ForeignKey(Statement, related_name='references', on_delete=models.CASCADE)
     url = models.URLField(max_length=250, null=True, blank=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
