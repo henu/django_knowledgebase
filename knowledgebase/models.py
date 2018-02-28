@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from dateutil.relativedelta import relativedelta
 
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
@@ -74,6 +75,8 @@ class Statement(models.Model):
             return '{}'.format(str(self.quantity_value))
         if hasattr(self, 'time_value'):
             return '{}'.format(str(self.time_value))
+        if hasattr(self, 'coordinate_value'):
+            return '{}'.format(str(self.coordinate_value))
         return '*NO VALUE*'
 
     def __str__(self):
@@ -181,6 +184,25 @@ class TimeValue(models.Model):
         if self.precision >= 14:
             result += ':{:02d}'.format(value.second)
         return result
+
+
+@python_2_unicode_compatible
+class CoordinateValue(models.Model):
+    statement = models.OneToOneField(Statement, related_name='coordinate_value', on_delete=models.CASCADE)
+    latitude = models.FloatField(validators=[MinValueValidator(-90), MaxValueValidator(90)])
+    longitude = models.FloatField(validators=[MinValueValidator(-180), MaxValueValidator(180)])
+    precision_m = models.FloatField(default=0)
+    height_m = models.FloatField(null=True, blank=True, default=None)
+    globe = models.ForeignKey(Concept, related_name='coordinates', on_delete=models.PROTECT)
+
+    def __str__(self):
+        if self.height_m is None:
+            return '{} lat, {} lon with {} m precision on {}'.format(
+                self.latitude, self.longitude, self.precision_m, str(self.globe)
+            )
+        return '{} lat, {} lon at {} m height with {} m precision on {}'.format(
+            self.latitude, self.longitude, self.height_m, self.precision_m, str(self.globe)
+        )
 
 
 @python_2_unicode_compatible

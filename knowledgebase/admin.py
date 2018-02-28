@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from django.utils.html import format_html
 
-from knowledgebase.models import Concept, Translation, Statement, StringValue, QuantityValue, TimeValue, Reference
+from knowledgebase.models import Concept, Translation, Statement, StringValue, QuantityValue, TimeValue, CoordinateValue, Reference
 
 @admin.register(Concept)
 class ConceptAdmin(admin.ModelAdmin):
@@ -54,6 +54,10 @@ class QuantityValueAdmin(admin.ModelAdmin):
 
 @admin.register(TimeValue)
 class TimeValueAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(CoordinateValue)
+class CoordinateValueAdmin(admin.ModelAdmin):
     pass
 
 @admin.register(Reference)
