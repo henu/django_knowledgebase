@@ -5,9 +5,11 @@ from dateutil.relativedelta import relativedelta
 
 from django.conf import settings
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 
+@python_2_unicode_compatible
 class Concept(models.Model):
     description = models.TextField(null=True, blank=True, default=None)
 
@@ -33,10 +35,11 @@ class Concept(models.Model):
 
         return ''
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_translation() or self.description
 
 
+@python_2_unicode_compatible
 class Translation(models.Model):
     concept = models.ForeignKey(Concept, related_name='translations', on_delete=models.CASCADE)
     translation = models.CharField(max_length=250)
@@ -47,12 +50,13 @@ class Translation(models.Model):
         unique_together = ['lang', 'case']
         index_together = ['lang', 'case']
 
-    def __unicode__(self):
+    def __str__(self):
         if self.case:
             return '{} ({}:{})'.format(self.translation, self.lang, self.case)
         return '{} ({})'.format(self.translation, self.lang)
 
 
+@python_2_unicode_compatible
 class Statement(models.Model):
     concept = models.ForeignKey(Concept, related_name='statements', on_delete=models.CASCADE, null=True, blank=True)
     statement = models.ForeignKey('Statement', related_name='qualifiers', on_delete=models.CASCADE, null=True, blank=True)
@@ -72,34 +76,37 @@ class Statement(models.Model):
             return '{}'.format(self.time_value)
         return '*NO VALUE*'
 
-    def __unicode__(self):
+    def __str__(self):
         if self.concept:
             return '{}, {}, {}'.format(self.concept, self.pred, self.get_value_as_string())
         assert self.statement
         return '{} ({}, {})'.format(self.statement, self.pred, self.get_value_as_string())
 
 
+@python_2_unicode_compatible
 class StringValue(models.Model):
     statement = models.OneToOneField(Statement, related_name='string_value', on_delete=models.CASCADE)
     value = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return '"{}"'.format(self.value)
 
 
+@python_2_unicode_compatible
 class QuantityValue(models.Model):
     statement = models.OneToOneField(Statement, related_name='quantity_value', on_delete=models.CASCADE)
     value = models.DecimalField(max_digits=30, decimal_places=12)
     lower_bound = models.DecimalField(max_digits=30, decimal_places=12, null=True, blank=True)
     upper_bound = models.DecimalField(max_digits=30, decimal_places=12, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.lower_bound is not None and self.upper_bound is not None:
             return '{} - {}'.format(self.lower_bound, self.upper_bound)
         return '{}'.format(self.value)
 
 
 # TODO: Support negative years and also billions of years
+@python_2_unicode_compatible
 class TimeValue(models.Model):
     PRECISION_CHOICES = [
         (6, _('millenium')),
@@ -122,7 +129,7 @@ class TimeValue(models.Model):
     before = models.PositiveIntegerField(null=True, blank=True)
     after = models.PositiveIntegerField(null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.precision == 6:
             year = int(round(self.value.year / 1000.0)) * 1000
             year_unit = 1000
@@ -176,12 +183,13 @@ class TimeValue(models.Model):
         return result
 
 
+@python_2_unicode_compatible
 class Reference(models.Model):
     statement = models.ForeignKey(Statement, related_name='references', on_delete=models.CASCADE)
     url = models.URLField(max_length=250, null=True, blank=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.url:
             return self.url
         if self.description:
