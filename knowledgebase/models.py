@@ -14,15 +14,19 @@ from django.utils.translation import ugettext_lazy as _
 class Concept(models.Model):
     description = models.TextField(null=True, blank=True, default=None)
 
-    def get_translation(self, lang=settings.LANGUAGE_CODE, case=None):
+    def get_translation(self, lang=settings.LANGUAGE_CODE, case=None, strict_case=False):
         """ Tries to get proper translation and case, but may return
         some other translation or case, if requested one is not available.
+
+        If "strict_case" is set to true, then None is returned if case was not found
         """
 
         # Try requested language and case
         translation = self.translations.filter(lang=lang, case=case).first()
         if translation:
             return translation.translation
+        if strict_case:
+            return None
 
         # Try requested language
         translation = self.translations.filter(lang=lang).first()
