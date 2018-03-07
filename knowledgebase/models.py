@@ -155,7 +155,7 @@ class TimeValue(models.Model):
             if self.before is not None and self.after is not None:
                 if self.before > 0 or self.after > 0:
                     return '{} – {}'.format(year - year_unit * self.before, year + year_unit * self.after)
-                return year
+            return year
 
         if self.before is not None and self.after is not None and (self.before > 0 or self.after > 0):
             if self.precision == 10:
