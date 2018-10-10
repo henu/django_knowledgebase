@@ -211,8 +211,8 @@ class CoordinateValue(models.Model):
 
 @python_2_unicode_compatible
 class Reference(models.Model):
-    statement = models.ForeignKey(Statement, related_name='references', on_delete=models.CASCADE)
-    url = models.URLField(max_length=250, null=True, blank=True)
+    statements = models.ManyToManyField(Statement, related_name='references')
+    url = models.URLField(unique=True, max_length=250, null=True, blank=True)
     description = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
